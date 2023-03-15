@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Page d'Accueil</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
+    <link rel="stylesheet" href="./style.css">
+
+    <!-- html2canvas library -->
+    <script src="js/html2canvas.min.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
+    <!-- jsPDF library -->
+    <script src="js/jsPDF/dist/jspdf.min.js"></script>
+
+
+
+</head>
+<body>
+    <div class="titre">
+        <h1 class="elegantshadow">Vendredi</h1>
+
+        <div class="crono">
+            <form name="chronoForm">
+                <input type="button" class="btn btn-success" value="Retour !" onclick="history.back()">
+                <input type="text" name="chronotime" id="chronotime" value="0:00:00" />
+                <input type="hidden" name="startstop" value="start!" onClick="chronoStart()" />
+                <input type="hidden" name="reset" value="reset!" onClick="chronoReset()" />
+            </form>
+        </div>
+
+        <script>
+        var startTime = 0
+        var start = 0
+        var end = 0
+        var diff = 0
+        var timerID = 0
+        window.onload = chronoStart;
+
+        function chrono() {
+            end = new Date()
+            diff = end - start
+            diff = new Date(diff)
+            var msec = diff.getMilliseconds()
+            var sec = diff.getSeconds()
+            var min = diff.getMinutes()
+            var hr = diff.getHours() - 1
+            if (min < 10) {
+                min = "0" + min
+            }
+            if (sec < 10) {
+                sec = "0" + sec
+            }
+            if (msec < 10) {
+                msec = "00" + msec
+            } else if (msec < 100) {
+                msec = "0" + msec
+            }
+            document.getElementById("chronotime").value = min + ":" + sec + ":" + msec
+            timerID = setTimeout("chrono()", 10)
+        }
+
+        function chronoStart() {
+            document.chronoForm.startstop.value = "stop!"
+            document.chronoForm.startstop.onclick = chronoStop
+            document.chronoForm.reset.onclick = chronoReset
+            start = new Date()
+            chrono()
+        }
+
+        function chronoContinue() {
+            document.chronoForm.startstop.value = "stop!"
+            document.chronoForm.startstop.onclick = chronoStop
+            document.chronoForm.reset.onclick = chronoReset
+            start = new Date() - diff
+            start = new Date(start)
+            chrono()
+        }
+
+        function chronoReset() {
+            document.getElementById("chronotime").value = "00:00:000"
+            start = new Date()
+        }
+
+        function chronoStopReset() {
+            document.getElementById("chronotime").value = "00:00:000"
+            document.chronoForm.startstop.onclick = chronoStart
+        }
+
+        function chronoStop() {
+            document.chronoForm.startstop.value = "start!"
+            document.chronoForm.startstop.onclick = chronoContinue
+            document.chronoForm.reset.onclick = chronoStopReset
+            setTimeout(rejouer)
+            clearTimeout(timerID)
+        }
+        </script>
+    </div>
+    <div id="game">
+        <h2>Sélectionnez des aliments pour composer votre menu :</h2>
+        <button onclick="afficherFoods()">Afficher les aliments</button>
+
+        <div id="foods" style="display: none;">
+            <script type="text/javascript">
+
+            function afficherFoods() {
+                var divFoods = document.getElementById("foods");
+                divFoods.style.display = "block";
+            }
+
+            const foods = [
+                { name:"Aiglefin (Surgelées)", value: 1  },
+                { name:"Ail (Surgelées)", value: 1  },
+                { name:"Ananas", value: 1  },
+                { name:"Aubergines en tranches (Surgelées)", value: 1  },
+                { name:"Bananes", value: 1  },
+                { name:"Bavette d'aloyau", value: 2  },
+                { name:"Betterave en dés", value: 1  },
+                { name:"Betterave en dés", value: 1  },
+                { name:"Beurre", value: 1  },
+                { name:"Blé", value: 1  },
+                { name:"Boeuf bourguignon", value: 2  },
+                { name:"Boudoir", value: 1  },
+                { name:"Boulettes de bœuf (Surgelées)", value: 1  },
+                { name:"Boulgour", value: 1  },
+                { name:"Bouquet garni", value: 1  },
+                { name:"Brandade de morue (Surgelées)", value: 1  },
+                { name:"Brocolis (Surgelées)", value: 1  },
+                { name:"Buche chèvre", value: 1  },
+                { name:"Calamars à la romaine (Surgelées)", value: 1  },
+                { name:"Caramel", value: 1  },
+                { name:"Carottes râpées", value: 1  },
+                { name:"Carottes rondelles (Surgelées)", value: 1  },
+                { name:"Céleri râpé", value: 1  },
+                { name:"Champignons de Paris (Surgelées)", value: 1  },
+                { name:"Choux-fleurs (Surgelées)", value: 1  },
+                { name:"Citrons", value: 1  },
+                { name:"Clémentines", value: 1  },
+                { name:"Coleslaw", value: 1  },
+                { name:"Compote", value: 1  },
+                { name:"Concassé de tomate", value: 1  },
+                { name:"Coquille de poisson (Surgelées)", value: 1  },
+                { name:"Cordon bleu (Surgelées)", value: 1  },
+                { name:"Côte de porc (Surgelées)", value: 1  },
+                { name:"Coulis de tomate", value: 1  },
+                { name:"Courgettes en rondelles (Surgelées)", value: 1  },
+                { name:"Crème anglaise", value: 1  },
+                { name:"Crème caramel", value: 1  },
+                { name:"Crème de Mascarpone", value: 1  },
+                { name:"Crème", value: 1  },
+                { name:"Crêpes au fromage/champignons/jambon (Surgelées)", value: 1  },
+                { name:"Crevette cocktail (Surgelées)", value: 1  },
+                { name:"Cubes de courges (Surgelées)", value: 1  },
+                { name:"Cuisse de lapin (Surgelées)", value: 1  },
+                { name:"Cuisse de Poulet (Surgelées)", value: 1 },
+                { name:"Cuisse de Poulet", value: 2  },
+                { name:"Darne de Saumon (Surgelées)", value: 1  },
+                { name:"Donuts", value: 1  },
+                { name:"Echalottes (Surgelées)", value: 1  },
+                { name:"Eclair au chocolat", value: 1  },
+                { name:"Egrené de bœuf (Surgelées)", value: 1  },
+                { name:"Epeautre", value: 1  },
+                { name:"Epinards branches (Surgelées)", value: 1  },
+                { name:"Epinards hachés (Surgelées)", value: 1  },
+                { name:"Escalope de dinde (Surgelées)", value: 1  },
+                { name:"Escalope de Dinde", value: 2  },
+                { name:"Faisselle", value: 1  },
+                { name:"Farine", value: 1  },
+                { name:"Feuilleté de poisson (Surgelées)", value: 1  },
+                { name:"Filet de Cabillaud (Surgelées)", value: 1  },
+                { name:"Filet de Dorade (Surgelées)", value: 1  },
+                { name:"Filet de lieu (Surgelées)", value: 1  },
+                { name:"Filet de Saumon (Surgelées)", value: 1  },
+                { name:"Filet meunière (Surgelées)", value: 1  },
+                { name:"Flageolet", value: 1  },
+                { name:"Flan pâtissier", value: 1  },
+                { name:"Fond de veau….", value: 1  },
+                { name:"Fraises", value: 1  },
+                { name:"Friands (Surgelées)", value: 1  },
+                { name:"Frites (Surgelées)", value: 1  },
+                { name:"Fromage blanc", value: 1  },
+                { name:"Fromage blanc", value: 1  },
+                { name:"Fromage", value: 1  },
+                { name:"Glace", value: 1  },
+                { name:"Gruyère râpé", value: 1  },
+                { name:"Haricots verts (Surgelées)", value: 1  },
+                { name:"Haricots verts", value: 1  },
+                { name:"Huile olive", value: 1  },
+                { name:"Huile tournesol", value: 1  },
+                { name:"Ile flottante", value: 1  },
+                { name:"Jamboneau", value: 2  },
+                { name:"Kebab (Surgelées)", value: 1  },
+                { name:"Ketchup", value: 1  },
+                { name:"Kiwis", value: 1  },
+                { name:"Lait", value: 1  },
+                { name:"Lanières de poivrons (Surgelées)", value: 1  },
+                { name:"Lapin", value: 2  },
+                { name:"Lasagne (Surgelées)", value: 1  },
+                { name:"Lentilles", value: 1  },
+                { name:"Maïs", value: 1  },
+                { name:"Mayonnaise", value: 1  },
+                { name:"Melons", value: 1  },
+                { name:"Merlu (Surgelées)", value: 1  },
+                { name:"Moussaka (Surgelées)", value: 1  },
+                { name:"Mousse au chocolat", value: 1  },
+                { name:"Moutarde", value: 1  },
+                { name:"Mozzarella", value: 1  },
+                { name:"Nectarines", value: 1  },
+                { name:"Œuf dur", value: 1  },
+                { name:"Œuf", value: 1  },
+                { name:"Oignons (Surgelées)", value: 1  },
+                { name:"Olive", value: 1  },
+                { name:"Omelette (Surgelées)", value: 1  },
+                { name:"Oranges", value: 1  },
+                { name:"Pamplemousses", value: 1  },
+                { name:"Pâte", value: 1  },
+                { name:"Paupiette de veau (Surgelées)", value: 1  },
+                { name:"Persil (Surgelées)", value: 1  },
+                { name:"Petit pois-carottes (Surgelées)", value: 1  },
+                { name:"Petits suisses", value: 1  },
+                { name:"Pizza (Surgelées)", value: 1 },
+                { name:"Poêlée de légumes (Surgelées)", value: 1  },
+                { name:"Poireaux rondelles (Surgelées)", value: 1  },
+                { name:"Poires", value: 1  },
+                { name:"Pois cassés", value: 1  },
+                { name:"Pois chiche", value: 1  },
+                { name:"Poisson pané (Surgelées)", value: 1  },
+                { name:"Poivron", value: 1  },
+                { name:"Pomme de terre", value: 1  },
+                { name:"Pommes", value: 1  },
+                { name:"Potimarrons (Surgelées)", value: 1  },
+                { name:"Poulet pac", value: 2  },
+                { name:"Préparation Taboulé", value: 1  },
+                { name:"Prunes", value: 1  },
+                { name:"Quiche (Surgelées)", value: 1  },
+                { name:"Raie (Surgelées)", value: 1  },
+                { name:"Raisins", value: 1  },
+                { name:"Ratatouille cuisinée (Surgelées)", value: 1  },
+                { name:"Riz", value: 1  },
+                { name:"Rôti de porc", value: 2  },
+                { name:"Salade de lentilles", value: 1  },
+                { name:"Salade de pâtes", value: 1  },
+                { name:"Salade de Riz", value: 1  },
+                { name:"Salade piémontaise", value: 1  },
+                { name:"Salade", value: 1  },
+                { name:"Salsifis (Surgelées)", value: 1  },
+                { name:"Saucisse de Toulouse", value: 2  },
+                { name:"Saucisse végétale (Surgelées)", value: 1  },
+                { name:"Saumonette (Surgelées)", value: 1  },
+                { name:"Sauté d'agneau", value: 2  },
+                { name:"Sauté de dinde (Surgelées)", value: 1  },
+                { name:"Sauté de porc (Surgelées)", value: 1  },
+                { name:"Semoule", value: 1  },
+                { name:"Steak de thon (Surgelées)", value: 1  },
+                { name:"Steak fromager (Surgelées)", value: 1  },
+                { name:"Steak haché 20% MG (Surgelées)", value: 1  },
+                { name:"Steak végétal (Surgelées)", value: 1  },
+                { name:"Sucre", value: 1  },
+                { name:"Tablette de chocolat (palet)", value: 1  },
+                { name:"Taboulé", value: 1  },
+                { name:"Tartes aux pommes", value: 1  },
+                { name:"Tiramisu", value: 1  },
+                { name:"Vinaigre", value: 1  },
+                { name:"Yaourt aux fruits", value: 1  },
+                { name:"Yaourt nature", value: 1  },
+
+
+            ];
+            let selectedFoods = [];
+
+            function displayFoods() {
+                let foodsList = document.getElementById("foods");
+                foodsList.innerHTML = "";
+                for (let i = 0; i < foods.length; i++) {
+                    let food = foods[i];
+                    let foodDiv = document.createElement("button");
+                    foodDiv.innerHTML = food.name;
+                    foodDiv.onclick = function() {
+                        selectFood(food);
+                    };
+
+                    // Attribuer une couleur en fonction du type d'aliment
+                    if (food.type === "fruit") {
+                        foodDiv.style.backgroundColor = "red";
+                    } else if (food.type === "vegetable") {
+                        foodDiv.style.backgroundColor = "green";
+                    }
+
+                    foodsList.appendChild(foodDiv);
+                }
+            }
+
+            function selectFood(food) {
+                let categories = [
+                    "1. Entrée N°1",
+                    "2. Entrée N°2",
+                    "3. Entrée N°3",
+                    "4. Plat principal N°1",
+                    "5. Plat principal N°2",
+                    "6. Accompagnement",
+                    "7. Produits Laitiers",
+                    "8. Dessert"
+                ];
+                let category = prompt(categories.join("\n") + "\nChoisissez une catégorie :");
+                food.category = category;
+                selectedFoods.push(food);
+                displaySelectedFoods();
+            }
+
+            function displaySelectedFoods() {
+                let selectedFoodsList = document.getElementById("selected-foods");
+                selectedFoodsList.innerHTML = "";
+
+                let entrée1 = selectedFoods.filter(f => f.category === "1");
+                let entrée2 = selectedFoods.filter(f => f.category === "2");
+                let entrée3 = selectedFoods.filter(f => f.category === "3");
+                let plat1 = selectedFoods.filter(f => f.category === "4");
+                let plat2 = selectedFoods.filter(f => f.category === "5");
+                let accompagnement = selectedFoods.filter(f => f.category === "6");
+                let laitier = selectedFoods.filter(f => f.category === "7");
+                let desserts = selectedFoods.filter(f => f.category === "8");
+
+
+                if (entrée1.length > 0) {
+                    let entrée1Header = document.createElement("h3");
+                    entrée1Header.innerHTML = "1.Entrée N°1";
+                    selectedFoodsList.appendChild(entrée1Header);
+
+                    for (let i = 0; i < entrée1.length; i++) {
+                        let food = entrée1[i];
+                        let foodDiv = document.createElement("div");
+                        foodDiv.innerHTML = food.name;
+                        selectedFoodsList.appendChild(foodDiv);
+                    }
+                }
+                if (entrée2.length > 0) {
+                    let entrée2Header = document.createElement("h3");
+                    entrée2Header.innerHTML = "2.Entrée N°2";
+                    selectedFoodsList.appendChild(entrée2Header);
+
+                    for (let i = 0; i < entrée2.length; i++) {
+                        let food = entrée2[i];
+                        let foodDiv = document.createElement("div");
+                        foodDiv.innerHTML = food.name;
+                        selectedFoodsList.appendChild(foodDiv);
+                    }
+                }
+
+
+                if (entrée3.length > 0) {
+                    let entrée3Header = document.createElement("h3");
+                    entrée3Header.innerHTML = "3.Entrée N°3";
+                    selectedFoodsList.appendChild(entrée3Header);
+
+                    for (let i = 0; i < entrée3.length; i++) {
+                        let food = entrée3[i];
+                        let foodDiv = document.createElement("div");
+                        foodDiv.innerHTML = food.name;
+                        selectedFoodsList.appendChild(foodDiv);
+                    }
+                }
+
+
+                if (plat1.length > 0) {
+                    let plats1Header = document.createElement("h3");
+                    plats1Header.innerHTML = "4.Plat principal N°1";
+                    selectedFoodsList.appendChild(plats1Header);
+                    for (let i = 0; i < plat1.length; i++) {
+                        let food = plat1[i];
+                        let foodDiv = document.createElement("div");
+                        foodDiv.innerHTML = food.name;
+                        selectedFoodsList.appendChild(foodDiv);
+                    }
+                }
+
+                if (plat2.length > 0) {
+                    let plats2Header = document.createElement("h3");
+                    plats2Header.innerHTML = "5.Plat principal N°2";
+                    selectedFoodsList.appendChild(plats2Header);
+                    for (let i = 0; i < plat2.length; i++) {
+                        let food = plat2[i];
+                        let foodDiv = document.createElement("div");
+                        foodDiv.innerHTML = food.name;
+                        selectedFoodsList.appendChild(foodDiv);
+                    }
+                }
+
+                if (accompagnement.length > 0) {
+                    let accompagnementHeader = document.createElement("h3");
+                    accompagnementHeader.innerHTML = "6.Accompagnement";
+                    selectedFoodsList.appendChild(accompagnementHeader);
+                    for (let i = 0; i < accompagnement.length; i++) {
+                        let food = accompagnement[i];
+                        let foodDiv = document.createElement("div");
+                        foodDiv.innerHTML = food.name;
+                        selectedFoodsList.appendChild(foodDiv);
+                    }
+                }
+                if (laitier.length > 0) {
+                    let laitierHeader = document.createElement("h3");
+                    laitierHeader.innerHTML = "7.Produit Laitier";
+                    selectedFoodsList.appendChild(laitierHeader);
+                    for (let i = 0; i < laitier.length; i++) {
+                        let food = laitier[i];
+                        let foodDiv = document.createElement("div");
+                        foodDiv.innerHTML = food.name;
+                        selectedFoodsList.appendChild(foodDiv);
+                    }
+                }
+                if (desserts.length > 0) {
+                    let dessertsHeader = document.createElement("h3");
+                    dessertsHeader.innerHTML = "8.Dessert";
+                    selectedFoodsList.appendChild(dessertsHeader);
+                    for (let i = 0; i < desserts.length; i++) {
+                        let food = desserts[i];
+                        let foodDiv = document.createElement("div");
+                        foodDiv.innerHTML = food.name;
+                        selectedFoodsList.appendChild(foodDiv);
+                    }
+                }
+            }
+            displayFoods();
+
+            </script>
+        </div>
+
+        <div class="Menu">
+
+
+            <h2>Votre menu :</h2>
+            <div id="selected-foods"></div>
+            <div class="textarea-container">
+                <h4>Rédigez votre menu ici :</h4>
+                <textarea id="menu-textarea"></textarea>
+            </div>
+
+            <script type="text/javascript">
+            const selectedFoods = {
+                entrée1: [],
+                entrée2: [],
+                entrée3 : [],
+                plat1: [],
+                plat2: [],
+                accompagnement: [],
+                laitier: [],
+                desserts: [],
+            };
+
+            const addFood = (category, food) => {
+                selectedFoods[category].push(food);
+            };
+
+            const renderSelectedFoods = () => {
+                const selectedFoodsContainer = document.getElementById("selected-foods");
+                selectedFoodsContainer.innerHTML = "";
+
+                Object.keys(selectedFoods).forEach(category => {
+                    const categoryContainer = document.createElement("div");
+                    const categoryHeader = document.createElement("h2");
+                    categoryHeader.textContent = category;
+                    categoryContainer.appendChild(categoryHeader);
+
+                    const foodList = document.createElement("ul");
+                    selectedFoods[category].forEach(food => {
+                        const foodItem = document.createElement("li");
+                        foodItem.textContent = food;
+                        foodList.appendChild(foodItem);
+                    });
+                    categoryContainer.appendChild(foodList);
+
+                    selectedFoodsContainer.appendChild(categoryContainer);
+                });
+            };
+
+            </script>
+
+            <script type="text/javascript">
+            function imprimer_page() {
+                var validerButton = document.getElementById('impression');
+                var divFoods = document.getElementById('foods');
+
+                validerButton.style.display = 'none'; // pour masquer le bouton pendant l'impression
+                divFoods.style.display = 'none'; // pour masquer la liste des aliments
+
+                window.print();
+
+                validerButton.style.display = 'block'; // pour réafficher le bouton après l'impression
+                divFoods.style.display = 'block'; // pour réafficher la liste des aliments après l'impression
+
+                var titre = document.querySelector('.titre').innerHTML;
+                var menu = document.querySelector('.Menu').innerHTML;
+                var textarea = document.getElementById('menu-textarea');
+                textarea.value = 'Titre du menu :\n' + titre + '\n\nContenu du menu :\n' + menu;
+            }
+            </script>
+
+        </body>
+        <div class="mon-bouton" id="impression" name="impression" type="submit" onclick="imprimer_page()">VALIDER</div>
+        <footer>
+            <div class="row0">
+                <div class="  col-sm-4 ">
+                </div>
+                <div class="col-sm-4 ">
+                    <p>POWERED BY <img class="foot" src="./CC Web x400.png " alt=" "></p>
+                </div>
+            </div>
+        </footer>
+        </html>
